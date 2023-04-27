@@ -191,7 +191,7 @@ const AudioEditor = () => {
 			redirect: "follow",
 		};
 
-		fetch(`${import.meta.env.API_URL}/edit-audio`, requestOptions)
+		fetch(`${import.meta.env.VITE_API_URL}/edit-audio`, requestOptions)
 			.then((response) => response.json())
 			.then((result) => {
 				setProcessing(false);

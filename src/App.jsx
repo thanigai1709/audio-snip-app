@@ -8,9 +8,14 @@ import Home from "./pages/Home";
 import Editor from "./pages/Editor";
 import Header from "./components/Header";
 import ThankYou from "./pages/ThankYou";
+import { useEffect } from "react";
 library.add(fas);
 
 function App() {
+	useEffect(() => {
+		window.localStorage.setItem("chakra-ui-color-mode", "dark");
+	}, []);
+
 	return (
 		<main className="app-parent">
 			<Header />

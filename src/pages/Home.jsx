@@ -49,7 +49,13 @@ const Home = () => {
 				<Text marginBottom={2} textAlign={"center"}>
 					Cut any audio file online
 				</Text>
-				<input type="file" ref={fileInputRef} style={{ display: "none" }} onChange={handleFileInputChange} />
+				<input
+					type="file"
+					ref={fileInputRef}
+					style={{ display: "none" }}
+					onChange={handleFileInputChange}
+					accept=".mp3,.wav"
+				/>
 				<Button onClick={handleButtonClick} size="lg" colorScheme={"purple"} isLoading={isLoading}>
 					Upload
 				</Button>

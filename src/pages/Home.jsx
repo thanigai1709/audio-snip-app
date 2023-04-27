@@ -27,7 +27,7 @@ const Home = () => {
 			redirect: "follow",
 		};
 
-		fetch("http://127.0.0.1:8000/upload-file", requestOptions)
+		fetch(`${import.meta.env.VITE_API_URL}/upload-file`, requestOptions)
 			.then((response) => response.json())
 			.then((result) => {
 				setFileURLObj({

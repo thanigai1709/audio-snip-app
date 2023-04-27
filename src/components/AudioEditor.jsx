@@ -2,12 +2,12 @@ import React, { useState, useEffect, useContext, useRef } from "react";
 import CursorPlugin from "wavesurfer.js/dist/plugin/wavesurfer.cursor.min.js";
 import RegionsPlugin from "wavesurfer.js/dist/plugin/wavesurfer.regions.min.js";
 import wavesurfer from "wavesurfer.js";
-import { Button, Stack } from "@chakra-ui/react";
+import { Button, Heading, Stack } from "@chakra-ui/react";
 import { IconButton } from "@chakra-ui/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { NumberInput, NumberInputField } from "@chakra-ui/react";
 import { Slider, SliderTrack, SliderFilledTrack, SliderThumb, SliderMark } from "@chakra-ui/react";
-import { Input, Tooltip, Select } from "@chakra-ui/react";
+import { Input, Tooltip, Select, Spinner } from "@chakra-ui/react";
 import { FileContext } from "../context/fileContext";
 import { useNavigate } from "react-router-dom";
 
@@ -24,9 +24,11 @@ const AudioEditor = () => {
 		start: 0,
 		end: 0,
 	});
+	const [isProcessing, setProcessing] = useState(false);
 	const [isCropAdded, setCropAdded] = useState(false);
 	const [volume, setVolume] = useState(0);
 	const [exportFormat, setExportFormat] = useState("mp3");
+	const [isInitialized, setInitialized] = useState(false);
 
 	useEffect(() => {
 		if (duration && wavesurferObj) {
@@ -73,8 +75,7 @@ const AudioEditor = () => {
 		if (wavesurferObj) {
 			// once the waveform is ready, play the audio
 			wavesurferObj.on("ready", () => {
-				console.log("player read.....");
-				// wavesurferObj.play();
+				setInitialized(true);
 			});
 
 			wavesurferObj.on("play", () => {
@@ -83,14 +84,12 @@ const AudioEditor = () => {
 
 			// once audio starts playing, set the state variable to false
 			wavesurferObj.on("finish", () => {
-				console.log("finished playing");
 				setPlaying(false);
 			});
 
 			wavesurferObj.on("region-updated", (region) => {
 				const regions = region.wavesurfer.regions.list;
 				const keys = Object.keys(regions);
-				console.log(regions[keys[0]].start, "region updated");
 				if (keys.length > 1) {
 					regions[keys[0]].remove();
 				}
@@ -159,13 +158,15 @@ const AudioEditor = () => {
 	};
 
 	useEffect(() => {
-		console.log(volume, "volume");
 		if (wavesurferObj) {
 			wavesurferObj.setVolume(normalizeVolume(volume));
 		}
 	}, [volume]);
 
 	function processAudio() {
+		setProcessing(true);
+		setPlaying(false);
+		wavesurferObj.stop();
 		var myHeaders = new Headers();
 		myHeaders.append("Content-Type", "application/json");
 
@@ -190,9 +191,12 @@ const AudioEditor = () => {
 			redirect: "follow",
 		};
 
-		fetch("http://127.0.0.1:8000/edit-audio", requestOptions)
+		fetch(`${import.meta.env.API_URL}/edit-audio`, requestOptions)
 			.then((response) => response.json())
 			.then((result) => {
+				setProcessing(false);
+				setPlaying(false);
+				wavesurferObj.stop();
 				setDownloadUrl(result.url);
 				navigation("/thank-you");
 			})
@@ -230,7 +234,7 @@ const AudioEditor = () => {
 					<Tooltip label={"End At"} placement={"bottom"} colorScheme="purple" bg={"purple.200"}>
 						<Input value={formatDuration(crop.end)} maxW={"80px"} disabled />
 					</Tooltip>
-					<Tooltip label={"Aplitude Boost"} placement={"bottom"} colorScheme="purple" bg={"purple.200"}>
+					<Tooltip label={"Volume Boost (db)"} placement={"bottom"} colorScheme="purple" bg={"purple.200"}>
 						<span>
 							<Slider
 								aria-label="slider-ex-4"
@@ -257,11 +261,21 @@ const AudioEditor = () => {
 						<option value="wav">wav</option>
 						<option value="flac">flac</option>
 					</Select>
-					<Button colorScheme={"purple"} size={"md"} onClick={processAudio}>
+					<Button colorScheme={"purple"} size={"md"} onClick={processAudio} paddingInline={10} isLoading={isProcessing}>
 						Save
 					</Button>
 				</div>
 			</div>
+			{!isInitialized && (
+				<div className="flash-screen">
+					<div className="flash-screen__content">
+						<Heading as={"h3"} size="lg">
+							Initializing Editor...
+						</Heading>
+						<Spinner />
+					</div>
+				</div>
+			)}
 		</div>
 	);
 };

@@ -62,6 +62,7 @@
 .header__logo {
   text-transform: lowercase;
   font-weight: 600;
+  font-size: 24px;
 }
 
 .thankyou-wrapper .btn-container{

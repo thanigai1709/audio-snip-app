@@ -1,0 +1,70 @@
+.player-wrapper{
+  margin-top: 12%;
+  padding: 15px 36px;
+}
+
+.app-parent{
+  /* display: flex;
+  align-items: center; */
+  height: 100vh;
+}
+
+.editor-bottom{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 36px;
+}
+
+.control-pannel{
+  display: flex;
+  column-gap: 18px;
+  align-items: center;
+}
+
+.control-export{
+  display: flex;
+  align-items: center;
+  column-gap: 18px;
+}
+
+.upload-section{
+  display: flex;
+  height: calc(100% - 66px);
+  justify-content: center;
+  align-items: center;
+  padding-inline: 15px;
+}
+
+.thankyou-wrapper{
+  display: flex;
+  height: calc(100% - 66px);
+  justify-content: center;
+  align-items: center;
+  padding-inline: 15px;
+  flex-direction: column;
+}
+
+.header{
+  padding: 15px;
+}
+
+.header__logo{
+  display: flex;
+  column-gap: 8px;
+  align-items: center;
+}
+
+.header__logo img{
+  max-width: 36px;
+}
+
+.header__logo {
+  text-transform: lowercase;
+  font-weight: 600;
+}
+
+.thankyou-wrapper .btn-container{
+  display: flex;
+  column-gap: 18px;
+}
